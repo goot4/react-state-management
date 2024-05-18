@@ -8,8 +8,14 @@ type Config = {
   password: string|null
   email: string|null
 }
+
+let darkMode=false
+if(typeof window !== 'undefined') {
+  darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  if(darkMode) document.documentElement.classList.add('dark')
+}
 const initConfig: Config = {
-  darkMode: false,
+  darkMode: darkMode,
   isLoggedIn: false,
   userId: null,
   password: null,
@@ -40,7 +46,13 @@ export default function GlobalConfigProvider({ children }: Prop) {
 function configReducer(config: Config, action:IAction){
   switch (action.type) {
     case ActionType.DARK_MODE_TOGGLED: {
-      return { ...config, darkMode: !config.darkMode }
+      const newMode = !config.darkMode
+      if(newMode){
+        document.documentElement.classList.add('dark')
+      }else{
+        document.documentElement.classList.remove('dark')
+      }
+      return { ...config, darkMode: newMode }
     }
     case ActionType.USER_LOGGED_IN: {
       return { ...config, isLoggedIn: true, userId: action.userId!, password: action.password! }
