@@ -1,4 +1,3 @@
-'use client'
 
 import React, {createContext, Dispatch, useContext, useReducer} from 'react'
 
@@ -43,6 +42,9 @@ function configReducer(config: Config, action:IAction){
     case ActionType.DARK_MODE_TOGGLED: {
       return { ...config, darkMode: !config.darkMode }
     }
+    case ActionType.USER_LOGGED_IN: {
+      return { ...config, isLoggedIn: true, userId: action.userId!, password: action.password! }
+    }
     default: {
       throw Error('Unknown action: ' + action.type)
     }
@@ -56,7 +58,7 @@ enum ActionType {
 type IAction = {
   type: ActionType
   userId?: string
-
+  password?: string
 }
 
 export function useGlobalConfig() {
@@ -66,4 +68,6 @@ export function useGlobalConfig() {
 // Actions
 const toggleDarkMode = (dispatch: Dispatch<IAction>) =>
   dispatch({type: ActionType.DARK_MODE_TOGGLED})
-export { toggleDarkMode }
+const userLogIn = (dispatch: Dispatch<IAction>, userId:string, password: string) =>
+  dispatch({type: ActionType.USER_LOGGED_IN, userId: userId, password: password})
+export { toggleDarkMode, userLogIn }
